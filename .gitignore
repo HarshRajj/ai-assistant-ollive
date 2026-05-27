@@ -3,3 +3,7 @@ __pycache__/
 *.pyc
 .env
 eval_log.jsonl
+traces.jsonl
+sessions/
+_report_charts/
+evaluation_report.pdf

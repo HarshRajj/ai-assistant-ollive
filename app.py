@@ -33,6 +33,14 @@ inject_css()
 
 if "guardrail_log" not in st.session_state:
     st.session_state.guardrail_log = []
+if "frontier_messages" not in st.session_state:
+    st.session_state.frontier_messages = []
+if "oss_messages" not in st.session_state:
+    st.session_state.oss_messages = []
+if "tool_annotations" not in st.session_state:
+    st.session_state.tool_annotations = {}
+if "eval_history" not in st.session_state:
+    st.session_state.eval_history = []
 
 # ---------------------------------------------------------------------------
 # Hybrid Credential Shield  (sidebar → env var fallback)
@@ -63,6 +71,13 @@ with st.sidebar:
         ["🏟️ Arena", "📊 Evaluation Dashboard"],
         label_visibility="collapsed",
     )
+
+    st.markdown('<div class="glow-divider"></div>', unsafe_allow_html=True)
+
+    if st.button("🗑️ Clear Chat History", use_container_width=True):
+        st.session_state.frontier_messages = []
+        st.session_state.oss_messages = []
+        st.rerun()
 
     st.markdown('<div class="glow-divider"></div>', unsafe_allow_html=True)
 
