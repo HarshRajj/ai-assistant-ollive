@@ -4,8 +4,9 @@ emoji: 🫒
 colorFrom: purple
 colorTo: indigo
 sdk: gradio
-sdk_version: 4.44.0
+sdk_version: 5.1.0
 app_file: app.py
+python_version: "3.10"
 pinned: false
 license: apache-2.0
 short_description: "Qwen2.5-0.5B-Instruct inference API for Ollive AI Arena"

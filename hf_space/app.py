@@ -11,6 +11,11 @@ Output: dict with text, latency, tokens, model, guardrail_triggered
 import time
 import re
 import json
+import os
+
+# Fix for "localhost is not accessible" error in some Docker environments
+os.environ["NO_PROXY"] = "localhost,127.0.0.1,0.0.0.0"
+
 import gradio as gr
 from transformers import pipeline, AutoTokenizer
 
@@ -93,7 +98,7 @@ def estimate_tokens(text: str) -> int:
 
 
 def predict(
-    messages: list[dict],
+    messages: list,
     max_tokens: int = 512,
     temperature: float = 0.7,
 ) -> dict:
@@ -240,4 +245,4 @@ with gr.Blocks(title="🫒 Ollive OSS Model API") as demo:
 
 
 if __name__ == "__main__":
-    demo.launch()
+    demo.launch(server_name="0.0.0.0", share = True)

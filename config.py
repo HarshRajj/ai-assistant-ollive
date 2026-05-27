@@ -23,7 +23,7 @@ HF_TOKEN: str = os.getenv("HF_TOKEN", "")
 # ---------------------------------------------------------------------------
 # Model identifiers
 # ---------------------------------------------------------------------------
-OSS_MODEL_ID: str = "Qwen/Qwen2.5-0.5B-Instruct"
+OSS_MODEL_ID: str = "Qwen/Qwen2.5-7B-Instruct"
 FRONTIER_MODEL_NAME: str = "gpt-4o-mini"
 
 # ---------------------------------------------------------------------------
@@ -31,7 +31,7 @@ FRONTIER_MODEL_NAME: str = "gpt-4o-mini"
 #   "hf_space"     — deployed HF Space Gradio endpoint (default)
 #   "hf_inference" — HuggingFace Serverless Inference API (fallback)
 # ---------------------------------------------------------------------------
-OSS_BACKEND: str = os.getenv("OSS_BACKEND", "hf_space")
+OSS_BACKEND: str = os.getenv("OSS_BACKEND", "hf_inference")
 HF_SPACE_URL: str = os.getenv(
     "HF_SPACE_URL",
     "https://HarshRajj-ollive-oss.hf.space",
