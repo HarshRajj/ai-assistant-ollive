@@ -11,13 +11,32 @@ import plotly.graph_objects as go
 import plotly.express as px
 
 from evaluator import run_evaluation, CATEGORIES
-from config import EVAL_LOG_PATH, COST_TABLE
-from observability import (
-    load_traces,
-    latency_percentiles,
-    error_rate,
-    guardrail_rate,
-)
+from config import EVAL_LOG_PATH
+from observability import load_traces, latency_percentiles, error_rate, guardrail_rate
+
+# ---------------------------------------------------------------------------
+# Cost + latency data (inline — deployment platform comparison)
+# ---------------------------------------------------------------------------
+COST_TABLE = [
+    {"Model": "Qwen2.5-0.5B", "Platform": "HF Spaces (Free CPU)", "Type": "OSS",
+     "Avg Latency (s)": "10–25", "Cost / 1K tokens": "$0.00", "Cost / Month @ 100K tok": "$0.00",
+     "Notes": "Free tier; shared CPU; cold-start ~30s"},
+    {"Model": "Qwen2.5-0.5B", "Platform": "HF Spaces (Pro GPU T4)", "Type": "OSS",
+     "Avg Latency (s)": "1–3", "Cost / 1K tokens": "~$0.001", "Cost / Month @ 100K tok": "~$0.10",
+     "Notes": "$9/mo HF Pro; T4 GPU"},
+    {"Model": "Qwen2.5-0.5B", "Platform": "Modal (A10G)", "Type": "OSS",
+     "Avg Latency (s)": "0.5–1.5", "Cost / 1K tokens": "~$0.0006", "Cost / Month @ 100K tok": "~$0.06",
+     "Notes": "$0.000612/s; pay-per-use"},
+    {"Model": "Qwen2.5-0.5B", "Platform": "RunPod (RTX 3090)", "Type": "OSS",
+     "Avg Latency (s)": "0.3–1.0", "Cost / 1K tokens": "~$0.0004", "Cost / Month @ 100K tok": "~$0.04",
+     "Notes": "$0.22/hr spot"},
+    {"Model": "Qwen2.5-0.5B", "Platform": "Replicate", "Type": "OSS",
+     "Avg Latency (s)": "1–4", "Cost / 1K tokens": "~$0.0015", "Cost / Month @ 100K tok": "~$0.15",
+     "Notes": "$0.0002/sec; coldboot ~5s"},
+    {"Model": "gpt-4o-mini", "Platform": "OpenAI API", "Type": "Frontier",
+     "Avg Latency (s)": "1–3", "Cost / 1K tokens": "$0.00015 in / $0.0006 out",
+     "Cost / Month @ 100K tok": "~$0.075", "Notes": "SLA 99.9%; per-token billing"},
+]
 
 
 def render_eval_page(openai_key: str) -> None:

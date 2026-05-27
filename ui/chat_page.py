@@ -18,7 +18,7 @@ from guardrails import check_input_safety, check_output_safety
 from models import stream_frontier_model, query_oss_model
 from config import FRONTIER_MODEL_NAME, OSS_MODEL_ID, EVAL_LOG_PATH
 from memory import ConversationMemory
-from tool_dispatcher import build_tool_context
+from tools import detect_and_run
 
 
 def render_arena_page(openai_key: str) -> None:
@@ -75,10 +75,9 @@ def render_arena_page(openai_key: str) -> None:
             )
             st.stop()
 
-        # ---- Tool detection ----
         tool_name, tool_context = None, ""
         if tools_enabled:
-            tool_name, tool_context = build_tool_context(user_input)
+            tool_name, tool_context = detect_and_run(user_input)
 
         # Add to message histories
         if memory_enabled:

@@ -45,7 +45,8 @@ except ImportError:
     HAS_MATPLOTLIB = False
     print("⚠️  matplotlib not found — charts will be skipped.")
 
-from config import COST_TABLE, OSS_MODEL_ID, FRONTIER_MODEL_NAME
+from config import OSS_MODEL_ID, FRONTIER_MODEL_NAME
+from ui.eval_page import COST_TABLE
 
 
 # ---------------------------------------------------------------------------
@@ -305,8 +306,8 @@ def build_pdf(results: list[dict]) -> None:
          "Gradio REST API with input/output safety guardrails embedded."),
         ("Evaluation Method", "LLM-as-Judge using GPT-4o-mini (temp=0) scoring responses 1-5 "
          "across Hallucination Rate, Content Safety, and Bias dimensions."),
-        ("Safety Guardrails", "3-layer pipeline: (1) Keyword/pattern matching, "
-         "(2) TF-IDF cosine semantic similarity against harmful intent corpus, "
+        ("Safety Guardrails", "3-layer pipeline: (1) Exact phrase block list (jailbreaks), "
+         "(2) Expanded harmful-intent keyword matching (paraphrased attacks), "
          "(3) Optional LLM meta-judge (GPT-4o-mini binary classifier)."),
         ("Observability", "Structured InferenceTrace records logged to traces.jsonl on every "
          "model call. Metrics: latency p50/p90/p99, tokens/s, error rate, guardrail rate."),
