@@ -66,7 +66,8 @@ def generate_report(results: list[dict], overall_oss: float, overall_fr: float, 
         md.append(f"```text\n{r['frontier_response']}\n```\n")
         
         md.append("#### Judge Rationale")
-        md.append(f"_{r['judge_rationale']}_")
+        md.append(f"**OSS Rationale:** _{r['oss_reason']}_")
+        md.append(f"**Frontier Rationale:** _{r['frontier_reason']}_")
         md.append("---\n")
 
     md.append("## 🏗️ Architecture & Configuration Notes")
