@@ -1,16 +1,14 @@
 """
 Conversation memory manager for the Ollive AI Arena.
 
-Strategy: Sliding-window memory keeps the last N turns in full.
-When the buffer exceeds the summary threshold, older turns are collapsed
-into a concise summary injected as a system context message.
-
-Usage:
-    mem = ConversationMemory(window_size=10)
-    mem.add_user("Hello")
-    mem.add_assistant("Hi there!")
-    messages = mem.get_context_messages()  # inject into model call
+Uses LangChain's ConversationSummaryBufferMemory to compress older turns 
+into a running summary when the buffer exceeds the token cap.
 """
+
+import os
+from langchain_classic.memory import ConversationSummaryBufferMemory, ConversationBufferWindowMemory
+from langchain_openai import ChatOpenAI
+from langchain_core.messages import HumanMessage, AIMessage, SystemMessage
 
 from config import MEMORY_WINDOW_SIZE, MEMORY_SUMMARY_THRESHOLD
 
@@ -30,41 +28,61 @@ class ConversationMemory:
     ):
         self.window_size = window_size
         self.summary_threshold = summary_threshold
-        self._messages: list[dict] = []
-        self._summary: str = ""
-        self._turn_count: int = 0
+        self._turn_count = 0
 
-    # ------------------------------------------------------------------
-    # Core operations
-    # ------------------------------------------------------------------
+        api_key = os.environ.get("OPENAI_API_KEY")
+        if api_key:
+            # When an API key is available, use LangChain's SummaryBufferMemory.
+            # Max tokens is roughly estimated as threshold * 50 tokens/turn.
+            llm = ChatOpenAI(model="gpt-4o-mini", temperature=0, api_key=api_key)
+            self._memory = ConversationSummaryBufferMemory(
+                llm=llm,
+                max_token_limit=summary_threshold * 50,
+                return_messages=True
+            )
+        else:
+            # Fallback without LLM summarization: just keep the last window_size turns
+            self._memory = ConversationBufferWindowMemory(
+                k=window_size,
+                return_messages=True
+            )
 
     def add_user(self, text: str) -> None:
         """Append a user message and trigger summarization if needed."""
-        self._messages.append({"role": "user", "content": text})
+        self._memory.chat_memory.add_user_message(text)
         self._turn_count += 1
-        self._maybe_summarize()
+        if hasattr(self._memory, "prune"):
+            self._memory.prune()
 
     def add_assistant(self, text: str) -> None:
         """Append an assistant message."""
-        self._messages.append({"role": "assistant", "content": text})
+        self._memory.chat_memory.add_ai_message(text)
+        if hasattr(self._memory, "prune"):
+            self._memory.prune()
 
     def get_context_messages(self) -> list[dict]:
         """Return messages to inject into the model call.
 
-        If a summary of earlier turns exists, it is prepended as a
-        system message so the model knows what was discussed before.
+        Returns a list of dicts: [{"role": "user", "content": "..."}]
         """
-        windowed = self._messages[-self.window_size:]
-        if self._summary:
-            return [
-                {"role": "system", "content": f"[Earlier context]: {self._summary}"}
-            ] + windowed
-        return windowed
+        mem_vars = self._memory.load_memory_variables({})
+        messages = mem_vars.get("history", [])
+
+        result = []
+        for m in messages:
+            if isinstance(m, HumanMessage):
+                result.append({"role": "user", "content": m.content})
+            elif isinstance(m, AIMessage):
+                result.append({"role": "assistant", "content": m.content})
+            elif isinstance(m, SystemMessage):
+                result.append({"role": "system", "content": f"[Earlier context]: {m.content}"})
+            else:
+                result.append({"role": "system", "content": m.content})
+        return result
 
     def clear(self) -> None:
         """Reset memory completely."""
-        self._messages = []
-        self._summary = ""
+        self._memory.clear()
         self._turn_count = 0
 
     @property
@@ -73,65 +91,4 @@ class ConversationMemory:
 
     @property
     def message_count(self) -> int:
-        return len(self._messages)
-
-    # ------------------------------------------------------------------
-    # Summarization
-    # ------------------------------------------------------------------
-
-    def _maybe_summarize(self, openai_key: str = "") -> None:
-        """Collapse old messages into a summary when the buffer is full."""
-        if len(self._messages) <= self.summary_threshold:
-            return
-
-        keep_count = self.window_size // 2
-        to_summarize = self._messages[:-keep_count]
-        self._messages = self._messages[-keep_count:]
-
-        new_summary = self._summarize(to_summarize, openai_key)
-        self._summary = (
-            f"{self._summary} | {new_summary}" if self._summary else new_summary
-        )
-
-    def _summarize(self, messages: list[dict], openai_key: str = "") -> str:
-        """Summarize a list of messages.
-
-        Uses GPT-4o-mini if an API key is provided, otherwise falls back
-        to a simple extractive approach (first sentence of each user turn).
-        """
-        if openai_key:
-            try:
-                return self._llm_summarize(messages, openai_key)
-            except Exception:
-                pass
-        return self._extractive_summarize(messages)
-
-    def _llm_summarize(self, messages: list[dict], openai_key: str) -> str:
-        from openai import OpenAI
-        transcript = "\n".join(
-            f"{m['role'].upper()}: {m['content'][:200]}" for m in messages
-        )
-        client = OpenAI(api_key=openai_key)
-        response = client.chat.completions.create(
-            model="gpt-4o-mini",
-            messages=[{
-                "role": "user",
-                "content": (
-                    "Summarize this conversation in 2-3 sentences, keeping key facts:\n\n"
-                    + transcript
-                ),
-            }],
-            max_tokens=150,
-            temperature=0.3,
-        )
-        return response.choices[0].message.content.strip()
-
-    @staticmethod
-    def _extractive_summarize(messages: list[dict]) -> str:
-        """Fallback: grab the first sentence of each user message."""
-        snippets = [
-            m["content"].split(".")[0].strip()[:80]
-            for m in messages
-            if m["role"] == "user"
-        ][:4]
-        return "User discussed: " + "; ".join(snippets) + "."
+        return len(self._memory.chat_memory.messages)
