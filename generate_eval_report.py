@@ -26,7 +26,7 @@ OUTPUT_PATH = Path("report") / "EVAL_REPORT.md"
 
 def generate_report(results: list[dict], overall_oss: float, overall_fr: float, total_duration: float):
     if not results:
-        print("❌ No evaluation results provided.")
+        print("Error: No evaluation results provided.")
         return
 
     # Create report directory if it doesn't exist
@@ -78,18 +78,18 @@ def generate_report(results: list[dict], overall_oss: float, overall_fr: float, 
 
     # Write the markdown file
     OUTPUT_PATH.write_text("\n".join(md), encoding="utf-8")
-    print(f"✅ Generated Evaluation Report: {OUTPUT_PATH}")
+    print(f"Success: Generated Evaluation Report: {OUTPUT_PATH}")
 
 
 def main():
     if not os.environ.get("OPENAI_API_KEY"):
-        print("❌ OPENAI_API_KEY not found in environment. Cannot run judge.")
+        print("Error: OPENAI_API_KEY not found in environment. Cannot run judge.")
         sys.exit(1)
 
     # Delay imports to avoid overhead if env var is missing
     from evaluator import run_evaluation
 
-    print("🚀 Starting Evaluation Run...")
+    print("Starting Evaluation Run...")
     start_time = datetime.datetime.now()
     
     results = run_evaluation(os.environ["OPENAI_API_KEY"])
@@ -97,7 +97,7 @@ def main():
     duration = (datetime.datetime.now() - start_time).total_seconds()
     
     if not results:
-        print("❌ Evaluation failed.")
+        print("Error: Evaluation failed.")
         sys.exit(1)
 
     oss_avg = statistics.mean([r["oss_score"] for r in results])
