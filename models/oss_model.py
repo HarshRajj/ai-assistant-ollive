@@ -16,7 +16,6 @@ import time
 import json
 import urllib.request
 import urllib.parse
-from typing import Optional
 
 from config import OSS_MODEL_ID, SYSTEM_PROMPT, HF_TOKEN, OSS_BACKEND, HF_SPACE_URL, estimate_tokens
 from core.observability import make_trace, log_trace

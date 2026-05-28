@@ -9,7 +9,6 @@ Output: dict with text, latency, tokens, model, guardrail_triggered
 """
 
 import time
-import re
 import json
 import os
 

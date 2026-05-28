@@ -15,7 +15,6 @@ import hashlib
 import datetime
 import threading
 from dataclasses import dataclass, asdict
-from pathlib import Path
 from typing import Optional
 
 import pandas as pd
