@@ -40,6 +40,12 @@ ai-assistant-ollive/
 ├── app.py                   ← Streamlit entry point, sidebar, page routing
 ├── config.py                ← Centralized env vars, model IDs, COST_TABLE
 │
+├── core/                    ← Core engine logic
+│   ├── guardrails.py        ← 3-layer safety pipeline (pattern→semantic→LLM)
+│   ├── memory.py            ← LangChain ConversationSummaryBufferMemory wrapper
+│   ├── observability.py     ← InferenceTrace dataclass, JSONL logging, analytics
+│   └── tools.py             ← Safe calculator, DuckDuckGo search, datetime
+│
 ├── prompts/                 ← Modular prompt templates
 │   ├── system.py            ← Shared system prompt
 │   ├── judge.py             ← LLM-as-Judge evaluation prompt
@@ -66,10 +72,6 @@ ai-assistant-ollive/
 │   ├── test_tools.py
 │   └── test_evaluator.py
 │
-├── guardrails.py            ← 3-layer safety pipeline (pattern→semantic→LLM)
-├── memory.py                ← LangChain ConversationSummaryBufferMemory wrapper
-├── observability.py         ← InferenceTrace dataclass, JSONL logging, analytics
-├── tools.py                 ← Safe calculator, DuckDuckGo search, datetime
 ├── generate_eval_report.py  ← Headless eval → PDF via reportlab
 │
 └── hf_space/                ← OSS Model deployment package (Gradio REST API)
