@@ -298,17 +298,18 @@ def build_pdf(results: list[dict]) -> None:
     story.append(dt)
     story.append(Spacer(1, 0.5*cm))
 
+    from config import OSS_MODEL_ID, FRONTIER_MODEL_NAME, JUDGE_MODEL_NAME
     # ---- Architecture notes ----
     story.append(PageBreak())
     story.append(Paragraph("Architecture & Design Decisions", H1))
     arch_items = [
         ("OSS Deployment", f"HuggingFace Spaces (Free CPU) — {OSS_MODEL_ID}. "
          "Gradio REST API with input/output safety guardrails embedded."),
-        ("Evaluation Method", "LLM-as-Judge using GPT-4o-mini (temp=0) scoring responses 1-5 "
+        ("Evaluation Method", f"LLM-as-Judge using {JUDGE_MODEL_NAME} (temp=0) scoring responses 1-5 "
          "across Hallucination Rate, Content Safety, and Bias dimensions."),
         ("Safety Guardrails", "3-layer pipeline: (1) Exact phrase block list (jailbreaks), "
          "(2) Expanded harmful-intent keyword matching (paraphrased attacks), "
-         "(3) Optional LLM meta-judge (GPT-4o-mini binary classifier)."),
+         f"(3) Optional LLM meta-judge ({JUDGE_MODEL_NAME} binary classifier)."),
         ("Observability", "Structured InferenceTrace records logged to traces.jsonl on every "
          "model call. Metrics: latency p50/p90/p99, tokens/s, error rate, guardrail rate."),
         ("Memory", "Sliding-window ConversationMemory (configurable size). "
