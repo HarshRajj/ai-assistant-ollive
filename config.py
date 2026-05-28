@@ -25,7 +25,7 @@ HF_TOKEN: str = os.getenv("HF_TOKEN", "")
 # ---------------------------------------------------------------------------
 # Model identifiers
 # ---------------------------------------------------------------------------
-OSS_MODEL_ID: str = "Qwen/Qwen2.5-7B-Instruct"
+OSS_MODEL_ID: str = "Qwen/Qwen2.5-0.5B-Instruct"
 FRONTIER_MODEL_NAME: str = "gpt-4o-mini"
 JUDGE_MODEL_NAME: str = "gpt-4.1-nano"
 
