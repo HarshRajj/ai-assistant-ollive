@@ -41,7 +41,7 @@ HF_SPACE_URL: str = os.getenv(
 # ---------------------------------------------------------------------------
 # Shared system prompt
 # ---------------------------------------------------------------------------
-from prompts import SYSTEM_PROMPT
+from prompts import SYSTEM_PROMPT  # noqa: F401
 
 # ---------------------------------------------------------------------------
 # Memory settings
