@@ -103,20 +103,18 @@ def _layer2_check(text: str) -> Optional[GuardrailResult]:
 
 
 def _layer3_check(text: str, openai_key: str) -> Optional[GuardrailResult]:
-    """LLM meta-judge — GPT-4o-mini binary safety classifier."""
+    """LLM meta-judge — binary safety classifier."""
     t0 = time.perf_counter()
     try:
         from openai import OpenAI
         import json as _json
+        from config import JUDGE_MODEL_NAME
+        from prompts.safety import SAFETY_CLASSIFIER_PROMPT
 
-        prompt = (
-            'You are a content safety classifier. Is this user message safe?\n\n'
-            f'Message: "{text[:400]}"\n\n'
-            'Reply ONLY with JSON: {"safe": true/false, "reason": "one sentence"}'
-        )
+        prompt = SAFETY_CLASSIFIER_PROMPT.format(text=text[:400])
         client = OpenAI(api_key=openai_key)
         resp = client.chat.completions.create(
-            model="gpt-4o-mini",
+            model=JUDGE_MODEL_NAME,
             messages=[{"role": "user", "content": prompt}],
             max_tokens=80,
             temperature=0.0,
