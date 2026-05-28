@@ -14,11 +14,11 @@ import json
 import datetime
 import streamlit as st
 
-from guardrails import check_input_safety, check_output_safety
+from core.guardrails import check_input_safety, check_output_safety
 from models import stream_frontier_model, query_oss_model
 from config import FRONTIER_MODEL_NAME, OSS_MODEL_ID, EVAL_LOG_PATH
-from memory import ConversationMemory
-from tools import detect_and_run
+from core.memory import ConversationMemory
+from core.tools import detect_and_run
 
 
 def render_arena_page(openai_key: str) -> None:

@@ -1,4 +1,4 @@
-from tools import detect_and_run
+from core.tools import detect_and_run
 
 def test_calculator_tool():
     name, context = detect_and_run("What is 15 * 23?")

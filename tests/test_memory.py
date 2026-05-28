@@ -1,5 +1,5 @@
 import pytest
-from memory import ConversationMemory
+from core.memory import ConversationMemory
 
 @pytest.fixture
 def no_openai_key(monkeypatch):

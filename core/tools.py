@@ -7,7 +7,7 @@ Three tools are available:
   - datetime    Current date and time
 
 Entry point for the rest of the app:
-    from tools import detect_and_run
+    from core.tools import detect_and_run
 
     annotation, context = detect_and_run("What is 15 * 23?")
     # annotation = "calculator"

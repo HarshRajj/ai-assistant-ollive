@@ -12,7 +12,7 @@ import plotly.express as px
 
 from evaluator import run_evaluation, CATEGORIES
 from config import EVAL_LOG_PATH
-from observability import load_traces, latency_percentiles, error_rate, guardrail_rate
+from core.observability import load_traces, latency_percentiles, error_rate, guardrail_rate
 
 # ---------------------------------------------------------------------------
 # Cost + latency data (inline — deployment platform comparison)

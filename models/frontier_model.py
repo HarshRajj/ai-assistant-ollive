@@ -12,7 +12,7 @@ import time
 from openai import OpenAI
 
 from config import FRONTIER_MODEL_NAME, SYSTEM_PROMPT, estimate_tokens
-from observability import make_trace, log_trace
+from core.observability import make_trace, log_trace
 
 
 def _build_messages(messages: list[dict]) -> list[dict]:

@@ -7,7 +7,7 @@ from evaluator.dataset import TEST_PROMPTS
 from evaluator.judge import judge_response
 from models.oss_model import query_oss_model_headless
 from models.frontier_model import query_frontier_model
-from observability import new_eval_run_id, make_trace, log_trace
+from core.observability import new_eval_run_id, make_trace, log_trace
 
 
 def run_evaluation(openai_key: str) -> list[dict]:
