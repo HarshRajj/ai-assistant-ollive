@@ -55,12 +55,14 @@ def generate_report(results: list[dict], overall_oss: float, overall_fr: float, 
         md.append(f"### Prompt {i}: {r['category']}")
         md.append(f"> **Q:** {r['prompt']}\n")
         
+        oss_tps = r['oss_tokens'] / max(r['oss_latency'], 0.001)
         md.append("#### OSS Response")
-        md.append(f"**Score:** {r['oss_score']}/5 | **Latency:** {r['oss_latency']:.2f}s | **Tokens/sec:** {r['oss_tps']:.1f}")
+        md.append(f"**Score:** {r['oss_score']}/5 | **Latency:** {r['oss_latency']:.2f}s | **Tokens/sec:** {oss_tps:.1f}")
         md.append(f"```text\n{r['oss_response']}\n```\n")
         
+        fr_tps = r['frontier_tokens'] / max(r['frontier_latency'], 0.001)
         md.append("#### Frontier Response")
-        md.append(f"**Score:** {r['frontier_score']}/5 | **Latency:** {r['frontier_latency']:.2f}s | **Tokens/sec:** {r['frontier_tps']:.1f}")
+        md.append(f"**Score:** {r['frontier_score']}/5 | **Latency:** {r['frontier_latency']:.2f}s | **Tokens/sec:** {fr_tps:.1f}")
         md.append(f"```text\n{r['frontier_response']}\n```\n")
         
         md.append("#### Judge Rationale")
