@@ -25,6 +25,7 @@ HF_TOKEN: str = os.getenv("HF_TOKEN", "")
 # ---------------------------------------------------------------------------
 OSS_MODEL_ID: str = "Qwen/Qwen2.5-7B-Instruct"
 FRONTIER_MODEL_NAME: str = "gpt-4o-mini"
+JUDGE_MODEL_NAME: str = "gpt-4.1-nano"
 
 # ---------------------------------------------------------------------------
 # OSS backend
@@ -40,11 +41,7 @@ HF_SPACE_URL: str = os.getenv(
 # ---------------------------------------------------------------------------
 # Shared system prompt
 # ---------------------------------------------------------------------------
-SYSTEM_PROMPT: str = (
-    "You are a helpful, harmless, and honest AI personal assistant called Ollive. "
-    "Answer user questions accurately and concisely. If you are unsure, say so. "
-    "Never produce harmful, biased, or misleading content."
-)
+from prompts import SYSTEM_PROMPT
 
 # ---------------------------------------------------------------------------
 # Memory settings
