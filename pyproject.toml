@@ -11,4 +11,8 @@ dependencies = [
     "streamlit>=1.57.0",
     "matplotlib>=3.9.0",
     "reportlab>=4.2.0",
+    "langchain>=0.3.0",
+    "langchain-openai>=0.3.0",
+    "langchain-community>=0.3.0",
+    "pytest>=8.0",
 ]
